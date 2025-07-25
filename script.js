@@ -253,7 +253,31 @@ function createDiamondGeometry() {
 loadJewelryModel();
 
 function loadJewelryModel() {
-    // Try to load OBJ model first
+    // Try to load GLB model first (highest priority)
+    gltfLoader.load(
+        'ring.glb', // GLB file path
+        function (gltf) {
+            // Success - use GLB model
+            console.log('GLB ring loaded successfully');
+            setupGLBJewelry(gltf);
+            finishLoading();
+        },
+        function (progress) {
+            // Loading progress
+            const percent = (progress.loaded / progress.total) * 100;
+            updateProgress(percent);
+            console.log('GLB loading progress:', percent + '%');
+        },
+        function (error) {
+            // GLB failed - try OBJ as fallback
+            console.log('GLB not found, trying OBJ...', error);
+            loadOBJModel();
+        }
+    );
+}
+
+function loadOBJModel() {
+    // Try to load OBJ model as second priority
     objLoader.load(
         'ring.obj', // OBJ file path
         function (object) {
@@ -266,10 +290,10 @@ function loadJewelryModel() {
             // Loading progress
             const percent = (progress.loaded / progress.total) * 100;
             updateProgress(percent);
-            console.log('Loading progress:', percent + '%');
+            console.log('OBJ loading progress:', percent + '%');
         },
         function (error) {
-            // Error - fallback to procedural model
+            // OBJ also failed - fallback to procedural model
             console.log('OBJ loading failed, using fallback model:', error);
             createRealisticJewelry();
             simulateLoadingProgress();
@@ -295,13 +319,13 @@ function setupOBJJewelry(object) {
         color: 0xffffff,
         metalness: 0.0,
         roughness: 0.0,
-        transmission: 0.7,
+        transmission: 0.3, // Reduced from 0.7 to 0.3 (less transparent)
         thickness: 0.1,
         ior: 2.417,
         reflectivity: 1.0,
         clearcoat: 1.0,
         clearcoatRoughness: 0.0,
-        opacity: 0.8,
+        opacity: 0.95, // Increased from 0.8 to 0.95 (more opaque)
         transparent: true,
     });
     
@@ -337,6 +361,64 @@ function setupOBJJewelry(object) {
     
     // Store reference for animations
     ring = jewelryGroup;
+    
+    scene.add(jewelryGroup);
+}
+
+function setupGLBJewelry(gltf) {
+    jewelryGroup = new THREE.Group();
+    
+    // Add the GLB scene
+    const model = gltf.scene;
+    
+    // Apply proper materials and shadows to all meshes
+    model.traverse((child) => {
+        if (child.isMesh) {
+            child.castShadow = true;
+            child.receiveShadow = true;
+            
+            // Enhance materials if needed
+            if (child.material) {
+                // If it's a gold-like material
+                if (child.material.name && child.material.name.toLowerCase().includes('gold')) {
+                    child.material.metalness = 1.0;
+                    child.material.roughness = 0.12;
+                    child.material.color.setHex(0xffdb58);
+                }
+                
+                // If it's a diamond-like material
+                if (child.material.name && child.material.name.toLowerCase().includes('diamond')) {
+                    child.material.transmission = 0.3; // Less transparent
+                    child.material.opacity = 0.95; // More opaque
+                    child.material.transparent = true;
+                    child.material.ior = 2.417;
+                    child.material.reflectivity = 1.0;
+                }
+            }
+        }
+    });
+    
+    // Position and scale the model
+    model.scale.set(0.5, 0.5, 0.5); // Same scale as OBJ
+    model.position.set(0, 0, 0);
+    
+    jewelryGroup.add(model);
+    
+    // Set initial properties for animation
+    jewelryGroup.scale.set(8, 8, 8); // Start large for zoom-out effect
+    jewelryGroup.rotation.x = Math.PI * 0.15; // Oblique angle
+    jewelryGroup.rotation.z = Math.PI * 0.1;  // Roll angle
+    
+    // Store reference for animations
+    ring = jewelryGroup;
+    diamond = null; // Will be found in GLB if present
+    
+    // Try to find diamond mesh in the model
+    model.traverse((child) => {
+        if (child.isMesh && child.material && child.material.transmission > 0.5) {
+            diamond = child; // Likely the diamond
+        }
+    });
     
     scene.add(jewelryGroup);
 }

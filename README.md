@@ -24,14 +24,25 @@ An elegant Three.js project showcasing a luxury jewelry ring with diamond, featu
 2. Note: Some browsers may block local file access for GLB loading
 
 ### Custom Models
-Place your OBJ ring model as `ring.obj` in the project root directory. If the file is not found, the application will automatically use a procedural fallback model.
+The application supports multiple model formats with automatic priority loading:
 
-**OBJ Model Requirements:**
+**Loading Priority:**
+1. **GLB format** - `ring.glb` (highest priority)
+2. **OBJ format** - `ring.obj` (fallback)
+3. **Procedural model** - Generated automatically if no files found
+
+**Model Requirements:**
+- **Location:** Same directory as `index.html`
+- **Scale:** Models are automatically scaled to 50% and positioned correctly
+
+**GLB Models:**
+- File name: `ring.glb`
+- Materials: Name materials with "gold" and "diamond" for automatic enhancement
+
+**OBJ Models:**
 - File name: `ring.obj`
-- Location: Same directory as `index.html`
-- Mesh names: Name diamond/gem meshes with "diamond", "gem", or "stone" for proper material assignment
-- All other meshes will receive gold material
-- Scale: The model will be automatically scaled and positioned
+- Mesh names: Use "diamond", "gem", or "stone" for diamond parts
+- All other meshes receive gold material automatically
 
 ## Files
 
