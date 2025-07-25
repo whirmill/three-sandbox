@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Élégance - Fine Jewelry & Diamonds</title>
+    <title>EXCALIBUR - Legendary Weapons Forge</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&display=swap');
         
         body {
             margin: 0;
             padding: 0;
             overflow: hidden;
-            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
-            font-family: 'Playfair Display', serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            font-family: 'Cinzel', serif;
         }
         
         canvas {
@@ -31,7 +31,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -48,54 +48,65 @@
         .brand-name {
             font-size: 4rem;
             font-weight: 700;
-            color: #2c2c2c;
+            color: #d4af37;
             margin-bottom: 2rem;
             text-align: center;
-            letter-spacing: 2px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            letter-spacing: 3px;
+            text-shadow: 0 0 20px #d4af37, 2px 2px 8px rgba(0,0,0,0.8);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glow {
+            from { text-shadow: 0 0 20px #d4af37, 2px 2px 8px rgba(0,0,0,0.8); }
+            to { text-shadow: 0 0 30px #d4af37, 0 0 40px #d4af37, 2px 2px 8px rgba(0,0,0,0.8); }
         }
         
         .tagline {
             font-size: 1.2rem;
             font-weight: 400;
-            color: #4a4a4a;
+            color: #b8860b;
             margin-bottom: 3rem;
             text-align: center;
             font-style: italic;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
         }
         
         .progress-container {
             width: 300px;
-            height: 6px;
-            background: rgba(44, 44, 44, 0.2);
-            border-radius: 3px;
+            height: 8px;
+            background: rgba(212, 175, 55, 0.2);
+            border-radius: 4px;
             overflow: hidden;
             margin-bottom: 1rem;
+            border: 1px solid rgba(212, 175, 55, 0.3);
         }
         
         .progress-bar {
             height: 100%;
-            background: linear-gradient(90deg, #2c2c2c 0%, #666 100%);
+            background: linear-gradient(90deg, #d4af37 0%, #ffd700 50%, #d4af37 100%);
             width: 0%;
             transition: width 0.3s ease;
             border-radius: 3px;
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
         }
         
         .progress-text {
             font-size: 0.9rem;
-            color: #4a4a4a;
+            color: #b8860b;
             text-align: center;
             margin-top: 0.5rem;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
         }
         
         #info {
             position: absolute;
             top: 10px;
             right: 10px;
-            color: #2c2c2c;
+            color: #d4af37;
             font-size: 12px;
             z-index: 100;
-            opacity: 0.7;
+            opacity: 0.8;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
         }
         
         #controls {
@@ -113,42 +124,47 @@
         }
         
         .control-btn {
-            background: rgba(44, 44, 44, 0.8);
-            color: white;
-            border: none;
+            background: rgba(26, 26, 46, 0.8);
+            color: #d4af37;
+            border: 2px solid rgba(212, 175, 55, 0.3);
             padding: 10px 20px;
             margin: 0 5px;
             border-radius: 25px;
-            font-family: 'Playfair Display', serif;
+            font-family: 'Cinzel', serif;
             font-size: 14px;
             cursor: pointer;
             transition: all 0.3s ease;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
         }
         
         .control-btn:hover {
-            background: rgba(44, 44, 44, 1);
+            background: rgba(26, 26, 46, 1);
+            border-color: #d4af37;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
             transform: translateY(-2px);
         }
         
         .control-btn.active {
-            background: linear-gradient(45deg, #ff9a9e, #fecfef);
-            color: #2c2c2c;
+            background: linear-gradient(45deg, #d4af37, #ffd700);
+            color: #1a1a2e;
+            border-color: #ffd700;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.6);
         }
     </style>
 </head>
 <body>
     <div id="loader">
-        <div class="brand-name">ÉLÉGANCE</div>
-        <div class="tagline">Fine Jewelry & Diamonds</div>
+        <div class="brand-name">EXCALIBUR</div>
+        <div class="tagline">Legendary Weapons Forge</div>
         <div class="progress-container">
             <div class="progress-bar" id="progressBar"></div>
         </div>
-        <div class="progress-text" id="progressText">Loading... 0%</div>
+        <div class="progress-text" id="progressText">Forging... 0%</div>
     </div>
-    <div id="info">Élégance Jewelry</div>
+    <div id="info">Excalibur Forge</div>
     <div id="controls">
-        <button class="control-btn active" id="cinematicBtn">✨ Cinematic</button>
-        <button class="control-btn" id="interactiveBtn">🎮 Interactive</button>
+        <button class="control-btn active" id="cinematicBtn">⚔️ Epic View</button>
+        <button class="control-btn" id="interactiveBtn">🛡️ Inspect</button>
     </div>
     <script type="importmap">
         {

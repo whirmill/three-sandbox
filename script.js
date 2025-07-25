@@ -12,7 +12,7 @@ const loader = document.getElementById('loader');
 function updateProgress(progress) {
     loadingProgress = progress;
     progressBar.style.width = `${progress}%`;
-    progressText.textContent = `Loading... ${Math.round(progress)}%`;
+    progressText.textContent = `Forging... ${Math.round(progress)}%`;
 }
 
 // Scene setup
@@ -255,10 +255,10 @@ loadJewelryModel();
 function loadJewelryModel() {
     // Try to load GLB model first (highest priority)
     gltfLoader.load(
-        'ring.glb', // GLB file path
+        'sword.glb', // GLB file path - now looking for sword
         function (gltf) {
             // Success - use GLB model
-            console.log('GLB ring loaded successfully');
+            console.log('GLB sword loaded successfully');
             setupGLBJewelry(gltf);
             finishLoading();
         },
@@ -279,10 +279,10 @@ function loadJewelryModel() {
 function loadOBJModel() {
     // Try to load OBJ model as second priority
     objLoader.load(
-        'ring.obj', // OBJ file path
+        'sword.obj', // OBJ file path - now looking for sword
         function (object) {
             // Success - use OBJ model
-            console.log('OBJ ring loaded successfully');
+            console.log('OBJ sword loaded successfully');
             setupOBJJewelry(object);
             finishLoading();
         },
@@ -304,28 +304,45 @@ function loadOBJModel() {
 function setupOBJJewelry(object) {
     jewelryGroup = new THREE.Group();
     
-    // Create materials for the OBJ model
-    const goldMaterial = new THREE.MeshPhysicalMaterial({
-        color: 0xffdb58,
+    // Create realistic materials for sword components
+    const bladeMaterial = new THREE.MeshPhysicalMaterial({
+        color: 0xc0c0c0, // Steel silver color
         metalness: 1.0,
-        roughness: 0.12,
-        reflectivity: 0.8,
+        roughness: 0.15,
+        reflectivity: 0.9,
         clearcoat: 1.0,
-        clearcoatRoughness: 0.05,
-        envMapIntensity: 1.5,
+        clearcoatRoughness: 0.1,
+        envMapIntensity: 1.2,
     });
     
-    const diamondMaterial = new THREE.MeshPhysicalMaterial({
-        color: 0xffffff,
+    const handleMaterial = new THREE.MeshPhysicalMaterial({
+        color: 0x8b4513, // Brown leather/wood color
+        metalness: 0.1,
+        roughness: 0.8,
+        clearcoat: 0.3,
+        clearcoatRoughness: 0.7,
+    });
+    
+    const guardMaterial = new THREE.MeshPhysicalMaterial({
+        color: 0xffd700, // Gold guard
+        metalness: 1.0,
+        roughness: 0.2,
+        reflectivity: 0.8,
+        clearcoat: 1.0,
+        clearcoatRoughness: 0.1,
+    });
+    
+    const gemMaterial = new THREE.MeshPhysicalMaterial({
+        color: 0x8b0000, // Dark red ruby
         metalness: 0.0,
         roughness: 0.0,
-        transmission: 0.3, // Reduced from 0.7 to 0.3 (less transparent)
+        transmission: 0.4,
         thickness: 0.1,
-        ior: 2.417,
+        ior: 1.7,
         reflectivity: 1.0,
         clearcoat: 1.0,
         clearcoatRoughness: 0.0,
-        opacity: 0.95, // Increased from 0.8 to 0.95 (more opaque)
+        opacity: 0.9,
         transparent: true,
     });
     
@@ -335,21 +352,27 @@ function setupOBJJewelry(object) {
             child.castShadow = true;
             child.receiveShadow = true;
             
-            // Assign materials based on mesh name or create a smart detection
+            // Assign materials based on mesh name for sword parts
             const meshName = child.name.toLowerCase();
             
-            if (meshName.includes('diamond') || meshName.includes('gem') || meshName.includes('stone')) {
-                child.material = diamondMaterial;
-                diamond = child; // Store diamond reference
+            if (meshName.includes('blade') || meshName.includes('sword')) {
+                child.material = bladeMaterial;
+            } else if (meshName.includes('handle') || meshName.includes('grip') || meshName.includes('hilt')) {
+                child.material = handleMaterial;
+            } else if (meshName.includes('guard') || meshName.includes('cross') || meshName.includes('pommel')) {
+                child.material = guardMaterial;
+            } else if (meshName.includes('gem') || meshName.includes('stone') || meshName.includes('ruby') || meshName.includes('crystal')) {
+                child.material = gemMaterial;
+                diamond = child; // Store gem reference for sparkle effects
             } else {
-                // Default to gold material for ring parts
-                child.material = goldMaterial;
+                // Default to blade material for unknown parts
+                child.material = bladeMaterial;
             }
         }
     });
     
     // Position and scale the model
-    object.scale.set(0.5, 0.5, 0.5); // Reduced from 1 to 0.5 (50% smaller)
+    object.scale.set(1.2, 1.2, 1.2); // Increased to 1.2 for epic sword scale
     object.position.set(0, 0, 0);
     
     jewelryGroup.add(object);
@@ -377,29 +400,48 @@ function setupGLBJewelry(gltf) {
             child.castShadow = true;
             child.receiveShadow = true;
             
-            // Enhance materials if needed
+            // Enhance materials if needed for GLB
             if (child.material) {
-                // If it's a gold-like material
-                if (child.material.name && child.material.name.toLowerCase().includes('gold')) {
+                const materialName = child.material.name ? child.material.name.toLowerCase() : '';
+                
+                // Steel/Metal materials
+                if (materialName.includes('steel') || materialName.includes('metal') || materialName.includes('blade')) {
                     child.material.metalness = 1.0;
-                    child.material.roughness = 0.12;
-                    child.material.color.setHex(0xffdb58);
+                    child.material.roughness = 0.15;
+                    child.material.color.setHex(0xc0c0c0);
+                    child.material.clearcoat = 1.0;
                 }
                 
-                // If it's a diamond-like material
-                if (child.material.name && child.material.name.toLowerCase().includes('diamond')) {
-                    child.material.transmission = 0.3; // Less transparent
-                    child.material.opacity = 0.95; // More opaque
+                // Handle/Grip materials
+                else if (materialName.includes('handle') || materialName.includes('leather') || materialName.includes('wood')) {
+                    child.material.metalness = 0.1;
+                    child.material.roughness = 0.8;
+                    child.material.color.setHex(0x8b4513);
+                }
+                
+                // Gold materials (guard, pommel)
+                else if (materialName.includes('gold') || materialName.includes('brass')) {
+                    child.material.metalness = 1.0;
+                    child.material.roughness = 0.2;
+                    child.material.color.setHex(0xffd700);
+                }
+                
+                // Gem materials
+                else if (materialName.includes('gem') || materialName.includes('ruby') || materialName.includes('crystal')) {
+                    child.material.transmission = 0.4;
+                    child.material.opacity = 0.9;
                     child.material.transparent = true;
-                    child.material.ior = 2.417;
+                    child.material.ior = 1.7;
                     child.material.reflectivity = 1.0;
+                    child.material.color.setHex(0x8b0000);
+                    diamond = child; // Store gem reference
                 }
             }
         }
     });
     
     // Position and scale the model
-    model.scale.set(0.5, 0.5, 0.5); // Same scale as OBJ
+    model.scale.set(1.2, 1.2, 1.2); // Increased to 1.2 for epic sword scale
     model.position.set(0, 0, 0);
     
     jewelryGroup.add(model);
