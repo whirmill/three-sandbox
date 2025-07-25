@@ -1,12 +1,15 @@
-# Three.js Bouncing Sphere Project
+# Élégance - Luxury Jewelry Showcase
 
-A simple Three.js project that displays a bouncing sphere with GLB model support.
+An elegant Three.js project showcasing a luxury jewelry ring with diamond, featuring sophisticated animations and lighting.
 
 ## Features
 
-- Bouncing sphere animation with physics
-- GLB model loading support with fallback
-- Realistic lighting and shadows
+- Professional jewelry store loading screen with brand identity
+- Realistic 3D ring and diamond models with PBR materials
+- Sophisticated lighting setup for diamond sparkle effects
+- Smooth zoom-out entrance animation
+- Elegant rotation and tilt animations
+- Pink gradient luxury background
 - Responsive design
 
 ## Setup
@@ -21,18 +24,18 @@ A simple Three.js project that displays a bouncing sphere with GLB model support
 2. Note: Some browsers may block local file access for GLB loading
 
 ### Custom Models
-Optionally, place a `sphere.glb` file in the same directory to use a custom 3D model
+Optionally, place GLB files (`ring.glb`, `diamond.glb`) in the same directory to use custom 3D models
 
 ## Files
 
-- `index.html` - Main HTML file with Three.js setup
-- `script.js` - JavaScript with scene, animation, and GLB loading logic
+- `index.html` - Main HTML file with luxury jewelry store interface
+- `script.js` - JavaScript with 3D scene, animations, and jewelry rendering
 - `server.js` - Express server for serving the application
 - `package.json` - Node.js project configuration
 
 ## Usage
 
-The sphere will bounce around the scene automatically. If a `sphere.glb` file is present, it will be loaded; otherwise, a fallback sphere geometry will be used.
+The application displays a professional jewelry store loading screen with the "ÉLÉGANCE" brand. After loading, it reveals a beautiful 3D ring with diamond that zooms out smoothly and rotates elegantly with sparkling light effects.
 
 ## Dependencies
 
