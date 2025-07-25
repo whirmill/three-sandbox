@@ -97,6 +97,43 @@
             z-index: 100;
             opacity: 0.7;
         }
+        
+        #controls {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        
+        #controls.visible {
+            opacity: 1;
+        }
+        
+        .control-btn {
+            background: rgba(44, 44, 44, 0.8);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 0 5px;
+            border-radius: 25px;
+            font-family: 'Playfair Display', serif;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .control-btn:hover {
+            background: rgba(44, 44, 44, 1);
+            transform: translateY(-2px);
+        }
+        
+        .control-btn.active {
+            background: linear-gradient(45deg, #ff9a9e, #fecfef);
+            color: #2c2c2c;
+        }
     </style>
 </head>
 <body>
@@ -109,6 +146,10 @@
         <div class="progress-text" id="progressText">Loading... 0%</div>
     </div>
     <div id="info">Élégance Jewelry</div>
+    <div id="controls">
+        <button class="control-btn active" id="cinematicBtn">✨ Cinematic</button>
+        <button class="control-btn" id="interactiveBtn">🎮 Interactive</button>
+    </div>
     <script type="importmap">
         {
             "imports": {
